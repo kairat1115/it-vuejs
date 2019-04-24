@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -11,6 +11,7 @@ export default new Vuex.Store({
     fullname: '',
     email: '',
     password: '',
+    active: 0,
     logged_in: false
   },
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     getEmail: state => state.email,
     getPassword: state => state.password,
     getLoggedIn: state => state.logged_in,
+    getActive: state => state.active,
   },
 
   mutations: {
@@ -28,7 +30,8 @@ export default new Vuex.Store({
     MsetLName: (state, name) => state.lname = name,
     MsetEmail: (state, email) => state.email = email,
     MsetPassword: (state, password) => state.password = password,
-    MsetLoggedIn: (state, status) => state.logged_in= status,
+    MsetLoggedIn: (state, status) => state.logged_in = status,
+    MsetActive: (state, status) => state.active = status,
   },
   actions: {
     AsetFName({ commit }, fname) {
@@ -45,6 +48,9 @@ export default new Vuex.Store({
     },
     AsetLoggedIn({ commit }, status) {
       commit('MsetLoggedIn', status);
+    },
+    AsetActive({ commit }, status) {
+      commit('MsetActive', status);
     },
   },
   plugins: [createPersistedState({

@@ -89,7 +89,7 @@
 <script>
     import axios from 'axios'
     import config from '@/config'
-    import { mapGetters, mapActions } from "vuex";
+    import { mapGetters } from "vuex";
 
     export default {
         name: "register",
@@ -118,10 +118,9 @@
             ...mapGetters(["getLoggedIn"])
         },
         methods: {
-            ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn"]),
             onSubmit(evt) {
                 evt.preventDefault();
-                if ((this.errors.email & this.errors.password) !== 0) {
+                if ((this.errors.email | this.errors.password) !== 0) {
                     return
                 }
                 axios.post(`${config.uri}/user/create.php`, {
@@ -130,13 +129,13 @@
                     email: this.form.email,
                     password: this.form.password1
                 })
-                    .then(response => {
-                        if (response.data.output.message === "User not created") {
-                            this.showAlert();
-                        } else {
-                            this.$router.push('/login');
-                        }
-                    });
+                .then(response => {
+                    if (response.data.error === "User is not created") {
+                        this.showAlert();
+                    } else {
+                        this.$router.push('/login');
+                    }
+                });
             },
             checkIfLoggedIn() {
                 if (this.getLoggedIn) {

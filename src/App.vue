@@ -18,12 +18,15 @@
 
             <b-nav-item-dropdown right>
               <template slot="button-content"><em>{{getFullname}}</em></template>
-              <b-dropdown-item href="#">Profile</b-dropdown-item>
+              <b-dropdown-item :to="'/profile'">Profile</b-dropdown-item>
               <b-dropdown-item href="#" @click="signOut">Sign Out</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
+        <div v-if="getActive === 0">
+            <b-alert variant="danger" show>Account is deactivated.</b-alert>
+        </div>
     </div>
     <router-view/>
   </div>
@@ -37,30 +40,28 @@
   export default {
     name: "app",
     computed: {
-      ...mapGetters(["getEmail", "getPassword", "getLoggedIn", "getFullname"])
+      ...mapGetters(["getEmail", "getPassword", "getLoggedIn", "getFullname", "getActive"])
     },
     created() {
       this.checklogin()
     },
     methods: {
-      ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn"]),
+      ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn", "AsetActive"]),
       checklogin() {
-        this.email = this.getEmail || this.$cookies.get('email') || '';
-        this.password = this.getPassword || this.$cookies.get('password') || '';
+        let email = this.getEmail || this.$cookies.get('email') || '';
+        let password = this.getPassword || this.$cookies.get('password') || '';
         if (this.getLoggedIn) {
           return
         }
         axios.post(`${config.uri}/user/check.php`, {
-            email: this.email,
-            password: this.password
+            email,
+            password
         })
         .then(response => {
           if (response.data.output.message === "Not found") {
-            this.AsetEmail("");
-            this.AsetPassword("");
-            this.AsetFName("");
-            this.AsetLName("");
-            this.AsetLoggedIn(false);
+            this.resetLoginData();
+            this.$cookies.remove('email');
+            this.$cookies.remove('password');
             this.$router.push('/login')
           } else {
             let obj = response.data.output.message;
@@ -68,17 +69,22 @@
             this.AsetPassword(this.password);
             this.AsetFName(obj.fname);
             this.AsetLName(obj.lname);
+            this.AsetActive(obj.active);
             this.AsetLoggedIn(true);
           }
         });
       },
       signOut() {
+        this.resetLoginData();
+        this.$router.push('/login')
+      },
+      resetLoginData() {
         this.AsetEmail("");
         this.AsetPassword("");
         this.AsetFName("");
         this.AsetLName("");
         this.AsetLoggedIn(false);
-        this.$router.push('/login')
+        this.AsetActive(0);
       }
     }
   }
