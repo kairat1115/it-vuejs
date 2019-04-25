@@ -46,7 +46,7 @@
       this.checklogin()
     },
     methods: {
-      ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn", "AsetActive"]),
+      ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn", "AsetActive", "AsetID"]),
       checklogin() {
         let email = this.getEmail || this.$cookies.get('email') || '';
         let password = this.getPassword || this.$cookies.get('password') || '';
@@ -70,6 +70,7 @@
             this.AsetFName(obj.fname);
             this.AsetLName(obj.lname);
             this.AsetActive(obj.active);
+            this.AsetID(obj.id);
             this.AsetLoggedIn(true);
           }
         });
@@ -84,6 +85,7 @@
         this.AsetFName("");
         this.AsetLName("");
         this.AsetLoggedIn(false);
+        this.AsetID(0);
         this.AsetActive(0);
       }
     }
@@ -91,9 +93,9 @@
 </script>
 
 <style>
-    @import url('https://fonts.googleapis.com/css?family=Lato:400,700');
     body {
-        background: darkgray;
-        font-family: 'Lato', sans-serif;
+      font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+      line-height: 1.6;
+      background: #e8f7f0;
     }
 </style>

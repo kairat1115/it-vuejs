@@ -86,7 +86,7 @@
             ...mapGetters(["getLoggedIn"])
         },
         methods: {
-            ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn", "AsetActive"]),
+            ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn", "AsetActive", "AsetID"]),
             onSubmit(evt) {
                 evt.preventDefault();
                 axios.post(`${config.uri}/user/check.php`, {
@@ -107,6 +107,7 @@
                         this.AsetFName(obj.fname);
                         this.AsetLName(obj.lname);
                         this.AsetActive(obj.active);
+                        this.AsetID(obj.id);
                         this.AsetLoggedIn(true);
                         this.$router.push('/');
                     }

@@ -112,10 +112,10 @@
             this.setData()
         },
         computed: {
-            ...mapGetters(["getFname", "getLname", "getEmail", "getPassword", "getActive"])
+            ...mapGetters(["getFname", "getLname", "getEmail", "getPassword", "getActive", "getID"])
         },
         methods: {
-            ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetActive"]),
+            ...mapActions(["AsetFName", "AsetLName", "AsetPassword", "AsetActive"]),
             setData() {
                 this.form.email = this.getEmail;
                 this.form.fname = this.getFname;
@@ -137,7 +137,7 @@
             onSubmit(evt) {
                 evt.preventDefault();
                 let payload = {
-                    email: this.getEmail
+                    id: this.getID
                 };
                 if (this.getFname !== this.form.fname) {
                     payload.fname = this.form.fname
@@ -166,7 +166,7 @@
                 evt.preventDefault();
                 let active = (this.getActive) ? 0 : 1;
                 let payload = {
-                    email: this.getEmail,
+                    id: this.getID,
                     active
                 };
                 axios.put(`${config.uri}/user/update.php`, payload)
