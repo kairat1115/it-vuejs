@@ -11,8 +11,8 @@
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">
-            <b-nav-form>
-              <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+            <b-nav-form @submit="searchTodos">
+              <b-form-input size="sm" class="mr-sm-2" v-model="searchString" placeholder="Search"></b-form-input>
               <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
             </b-nav-form>
 
@@ -35,10 +35,15 @@
 <script>
   import axios from 'axios'
   import config from '@/config'
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapGetters, mapActions, mapMutations } from 'vuex'
 
   export default {
     name: "app",
+    data() {
+      return {
+        searchString: ''
+      }
+    },
     computed: {
       ...mapGetters(["getEmail", "getPassword", "getLoggedIn", "getFullname", "getActive"])
     },
@@ -46,7 +51,16 @@
       this.checklogin()
     },
     methods: {
-      ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn", "AsetActive", "AsetID"]),
+      ...mapMutations(["MsearchFilterTodos"]),
+      ...mapActions(["AsetFName", "AsetLName", "AsetEmail", "AsetPassword", "AsetLoggedIn", "AsetActive", "AsetID", "AfetchTodos"]),
+      searchTodos(e) {
+        e.preventDefault();
+        if (this.searchString === '') {
+          this.AfetchTodos();
+        } else {
+          this.MsearchFilterTodos(this.searchString);
+        }
+      },
       checklogin() {
         let email = this.getEmail || this.$cookies.get('email') || '';
         let password = this.getPassword || this.$cookies.get('password') || '';

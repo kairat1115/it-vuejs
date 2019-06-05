@@ -12,17 +12,25 @@
         <div class="todos">
             <b-alert v-model="errorState" variant="danger" dismissible>{{ this.errorMsg }}</b-alert>
             <div
-                    @dblclick="onDblClick(todo)"
                     v-for="todo in getAllTodos"
                     :key="todo.id"
                     class="todo"
+                    @dblclick="getActive !== 0 && onDblClick(todo)"
                     v-bind:class="{'is-complete':todo.completed}"
             >
-                {{ todo.title }}
-                <div class="ileft">
-                    <i @click="editTodo(todo.id)" class="fas fa-edit"></i>
+                <input
+                        type="text"
+                        :disabled="true"
+                        v-model="todo.title"
+                        style="background: transparent; text-align: center; border: none; color:black"
+                        :ref="'input_' + todo.id"
+                        @blur="updateTodo(todo)"
+                        v-on:keyup.enter="updateTodo(todo)"
+                >
+                <div class="ileft" v-if="getActive !== 0">
+                    <i @click="editTodo(todo)" class="fas fa-edit"></i>
                 </div>
-                <div class="iright">
+                <div class="iright" v-if="getActive !== 0">
                     <i @click="AdeleteTodo(todo.id)" class="fas fa-trash-alt"></i>
                 </div>
             </div>
@@ -42,7 +50,7 @@
             }
         },
         computed: {
-            ...mapGetters(["getAllTodos"])
+            ...mapGetters(["getAllTodos", "getActive"])
         },
         methods: {
             ...mapActions(["AfetchTodos", "AdeleteTodo", "AupdateTodo"]),
@@ -59,9 +67,22 @@
                         }
                     });
             },
-            editTodo(id) {
-                let todo = this.getAllTodos.filter(todo => todo.id === id);
-                console.log(todo);
+            editTodo(todo) {
+                let element = this.$refs['input_' + todo.id][0];
+                element.disabled = false;
+                this.$nextTick(() => {
+                    element.focus();
+                });
+            },
+            updateTodo(todo) {
+                let element = this.$refs['input_' + todo.id][0];
+                element.disabled = true;
+                this.AupdateTodo(todo)
+                    .then(response => {
+                        if (response !== 'Ok') {
+                            this.showError(response)
+                        }
+                    })
             },
             showError(e) {
                 this.errorMsg = e;

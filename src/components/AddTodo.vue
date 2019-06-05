@@ -4,15 +4,15 @@
         <div class="add">
             <b-alert v-model="errorState" variant="danger" dismissible>{{ this.errorMsg }}</b-alert>
             <form @submit="onSubmit">
-                <input type="text" v-model="title" placeholder="Add Todo...">
-                <input type="submit" value="Submit">
+                <input type="text" v-model="title" placeholder="Add Todo..." :disabled="getActive === 0">
+                <input type="submit" value="Submit" :disabled="getActive === 0">
             </form>
         </div>
     </div>
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
+    import { mapActions, mapGetters } from 'vuex';
 
     export default {
         name: "AddTodo",
@@ -22,6 +22,9 @@
                 errorState: false,
                 errorMsg: ''
             };
+        },
+        computed: {
+            ...mapGetters(["getActive"])
         },
         methods: {
             ...mapActions(["AaddTodo"]),

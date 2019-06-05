@@ -45,6 +45,7 @@ export default new Vuex.Store({
       }
       state.todos = todos
     },
+    MsearchFilterTodos: (state, searchString) => state.todos = state.todos.filter(todo => todo.title.includes(searchString)),
     MnewTodo: (state, todo) => {
       todo.completed = todo.completed !== "0";
       state.todos.unshift(todo)
